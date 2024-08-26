@@ -1,0 +1,1 @@
+export default ["Home", "Cricket", "News", "Matches", "Latest"];
