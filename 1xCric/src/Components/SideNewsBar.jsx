@@ -47,8 +47,19 @@ function SideNewsBar({category}) {
   useEffect(() => {
     fetchLatestNews();
     fetchPopularNews();
+    fetchAds();
   }, [category]);
+  const [ads, setAds] = useState([]);
 
+    const fetchAds = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/ads');
+        const pageAds = response.data;
+        setAds(pageAds);
+      } catch (err) {
+        console.error('Error fetching ads:', err);
+      }
+    };
   // Function to render news items based on the current view
   const renderNewsItems = (newsItems) =>
     newsItems.map((item, index) => (
@@ -114,6 +125,24 @@ function SideNewsBar({category}) {
             {view === 'popular' && renderNewsItems(popularNews)}
           </div>
         </div>
+      </div>
+      <div className="flex mt-4 m-8 w-full">
+      {ads.map(ad => (
+  ad.category === "Global" && (
+    <div key={ad._id} className="ad-item bg-white p-4 shadow-lg rounded-md hover:shadow-xl transition-shadow">
+      <img src={ad.image} alt={ad.title} className="ad-image w-full h-40 object-cover rounded-md mb-4" />
+      <a
+        href={ad.link}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="ad-title text-blue-600 font-semibold text-lg underline"
+      >
+        {ad.title}
+      </a>
+    </div>
+     )
+     ))}
+
       </div>
     </div>
 //     <div className='w-full md:w-1/3 mt-2 max-md:mt-0 md:ml-10 mb-5'>

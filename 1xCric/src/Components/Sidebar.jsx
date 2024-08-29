@@ -36,6 +36,9 @@ function Sidebar() {
                     <li className="mb-6">
                         <Link to="/Admin/Categories" className="text-xl hover:text-gray-300 text-red-500"><a onClick={handleLogout}>Logout</a></Link>
                     </li>
+                    <li className="mb-6">
+                        <Link to="/Admin/AdsManager" className="text-xl hover:text-gray-300">Ads Manager</Link>
+                    </li>
                     
                 </ul>
             </div>

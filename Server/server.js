@@ -1,10 +1,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const multer = require('multer');
+const cron = require('node-cron');
 const upload1 = multer({
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
   dest: 'uploads/'
 });
+
 const axios = require('axios');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
@@ -65,6 +67,15 @@ UserSchema.pre('save', async function (next) {
   next();
 });
 
+const adSchema = new mongoose.Schema({
+  image: { type: String, required: true },
+  link: { type: String, required: true },
+  title: { type: String, required: true },
+  category: { type: String, required: true },
+}, { timestamps: true });
+
+const Ad = mongoose.model('Ad', adSchema);
+
 const NewsSchema = new mongoose.Schema({
   id: String,
   title: String,
@@ -72,6 +83,8 @@ const NewsSchema = new mongoose.Schema({
   link: String,
   gemini_search_result: String,
   imageUrl: String,
+  author: String,
+  publishDateTime: { type: String, default: null },
   published: { type: Boolean, default: false },
   date: String, // YYYY-MM-DD
   time: String
@@ -90,6 +103,7 @@ const PublishedNewsSchema = new mongoose.Schema({
   link: String,
   gemini_search_result: String,
   imageUrl: String,
+  author: String,
   published: { type: Boolean, default: true },
   publishedAt: { type: Date, default: Date.now },
   date: { type: String, default: () => new Date().toISOString().split('T')[0] }, // Correct format for date (YYYY-MM-DD)
@@ -107,6 +121,7 @@ const PostsSchema = new mongoose.Schema({
   published: { type: Boolean, default: false },
   date: String, // YYYY-MM-DD
   time: String,
+  author: String,
   categories: [String]
 });
 
@@ -253,7 +268,7 @@ app.post('/api/auth/login', async (req, res) => {
     if (!user) return res.status(400).json({ message: 'Invalid username or password' });
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ message: 'Invalid username or password' });
-    const token = jwt.sign({ _id: user._id, isAdmin: user.isAdmin }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ _id: user._id, username: user.username, isAdmin: user.isAdmin }, process.env.JWT_SECRET, { expiresIn: '1h' });
     res.json({ token, isAdmin: user.isAdmin });
   } catch (err) {
     res.status(500).json({ message: 'Error logging in' });
@@ -285,6 +300,7 @@ async function fetchAndStoreNews() {
       categories: ["Uncategorized"],
       link: item.link,
       gemini_search_result: item.gemini_search_result,
+      author: "",
       date: item.date,
       time: item.time
     });
@@ -344,22 +360,66 @@ app.get('/api/news', async (req, res) => {
   }
 });
 
+const convertPublishDateTime = (dateTimeString) => {
+  // Check if the string already has seconds
+  if (!dateTimeString.includes(':00')) {
+    // Append seconds and timezone if not present
+    return `${dateTimeString}:00Z`;
+  }
+
+  // If seconds are already present, just append timezone
+  return `${dateTimeString}Z`;
+};
+
+cron.schedule('* * * * *', async () => {
+  try {
+    const now = new Date();
+    const articlesToPublish = await News.find({
+      publishDateTime: { $lte: now },
+      published: false
+    });
+
+    if (articlesToPublish.length > 0) {
+      for (const article of articlesToPublish) {
+        article.published = true;
+        await article.save();
+        console.log(`Published ${articlesToPublish.length} scheduled articles. on ${article.publishDateTime}`);
+        await axios.post(`http://localhost:5000/api/news/${article._id}/publish`);
+      }
+    }
+  } catch (err) {
+    console.error('Error scheduling articles for publishing:', err);
+  }
+});
+
 app.get('/api/published-news', async (req, res) => {
-  const { categories, page = 1, limit = 10 } = req.query;
+  const { categories, date, page = 1, limit = 10 } = req.query;
   const skip = (page - 1) * limit;
 
   try {
-    // Check if category is passed and filter accordingly
-    const filter = categories ? { categories: categories, published: true } : { published: true };
-    // const filter = categories ? { categories: { $in: categories.split(',') }, published: true } : { published: true };
+    // Build the filter object
+    const filter = { published: true };
+
+    // Filter by categories if provided
+    if (categories) {
+      filter.categories = categories;
+      // If multiple categories are passed as comma-separated, uncomment the below line:
+      // filter.categories = { $in: categories.split(',') };
+    }
+
+    // Filter by date if provided
+    if (date) {
+      filter.date = date;// Match the exact date
+    }
+
     // Fetch only the title and category of the published news
-    const newsItems = await PublishedNews.find(filter) // Select only 'title' and 'categories' fields
-      .sort({ date: -1, time: -1 })
+    const newsItems = await PublishedNews.find(filter)
+      .sort({ date: -1, time: -1 }) // Sort by date and time in descending order
       .skip(parseInt(skip))
       .limit(parseInt(limit))
       .exec();
 
-    // Get the total count of news items for the category
+    // Get the total count of news items for the filter
     const totalCount = await PublishedNews.countDocuments(filter);
 
     res.json({
@@ -374,7 +434,6 @@ app.get('/api/published-news', async (req, res) => {
 });
 
 
-
 app.put('/api/news/:id', async (req, res) => {
     try {
       // console.log(`ID received: ${req.params.id}`); 
@@ -387,7 +446,9 @@ app.put('/api/news/:id', async (req, res) => {
           gemini_search_result: req.body.gemini_search_result,
           categories: req.body.categories,
           imageUrl: req.body.imageUrl,
+          author: req.body.author,
           published: req.body.published,
+          publishDateTime: convertPublishDateTime(req.body.publishDateTime),
           date: req.body.date,
           time: req.body.time,
         }
@@ -412,7 +473,9 @@ app.post('/api/news', async (req, res) => {
       link: req.body.link, // Optional: A link field if required
       gemini_search_result: req.body.gemini_search_result, // Assuming this is the content
       categories: req.body.categories,
-      imageUrl: req.body.imageUrl, // Assuming this is for the image
+      author: req.body.author,
+      imageUrl: req.body.imageUrl,
+      publishDateTime: convertPublishDateTime(req.body.publishDateTime), // Assuming this is for the image
       published: req.body.published || false,
       date: new Date(), // Auto-generate date and time
       time: new Date().toLocaleTimeString(),
@@ -496,6 +559,7 @@ app.put('/api/published-news/:id', async (req, res) => {
           categories: req.body.categories,
           imageUrl: req.body.imageUrl,
           seoTitle: req.body.seoTitle,
+          author: req.body.author,
           metaDiscription: req.body.metaDescription,
           metaKeywords: req.body.metaKeywords,
           published: req.body.published,
@@ -513,6 +577,107 @@ app.put('/api/published-news/:id', async (req, res) => {
     }
   } catch (err) {
     res.status(500).send(err.message);
+  }
+});
+
+app.post('/api/ads', async (req, res) => {
+  try {
+    const newAd = new Ad({ 
+      image: req.body.image || '',
+      link: req.body.link,
+      title: req.body.title,
+      category: req.body.category
+    });
+    console.log(newAd)
+    await newAd.save();
+    res.status(201).json(newAd);
+  } catch (error) {
+    res.status(500).send('Error saving ad: ' + error.message);
+  }
+});
+
+// Get all ads
+app.get('/api/ads', async (req, res) => {
+  try {
+    const ads = await Ad.find();
+    res.json(ads);
+  } catch (error) {
+    console.error('Error fetching ads:', error);
+    res.status(500).send('Error fetching ads');
+  }
+});
+
+// Get ad by ID
+app.get('/api/ads/:id', async (req, res) => {
+  try {
+    const ad = await Ad.findById(req.params.id);
+    if (ad) {
+      res.json(ad);
+    } else {
+      res.status(404).send('Ad not found');
+    }
+  } catch (error) {
+    res.status(500).send('Error fetching ad: ' + error.message);
+  }
+});
+
+// Update ad by ID
+app.put('/api/ads/:id', async (req, res) => {
+  const { link, title, category } = req.body;
+
+  try {
+    const updatedAd = await Ad.findByIdAndUpdate(req.params.id, { link, title, category }, { new: true });
+    if (updatedAd) {
+      res.json(updatedAd);
+    } else {
+      res.status(404).send('Ad not found');
+    }
+  } catch (error) {
+    res.status(500).send('Error updating ad: ' + error.message);
+  }
+});
+
+// Delete ad by ID
+app.delete('/api/ads/:id', async (req, res) => {
+  try {
+    const deletedAd = await Ad.findByIdAndDelete(req.params.id);
+    if (deletedAd) {
+      res.status(204).send();
+    } else {
+      res.status(404).send('Ad not found');
+    }
+  } catch (error) {
+    res.status(500).send('Error deleting ad: ' + error.message);
+  }
+});
+
+app.post('/api/ads/:id/upload-image', upload1.single('image'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).send('No file uploaded.');
+    }
+    const image = `http://localhost:5000/uploads/${req.file.filename}`;
+    const ad = await Ad.findByIdAndUpdate(req.params.id, { image: image }, { new: true });
+    if (!ad) {
+      return res.status(404).send('Ad not found');
+    }
+    res.json(ad);
+  } catch (err) {
+    console.error('Error during file upload:', err);
+    res.status(500).send(err.message);
+  }
+})
+
+app.post('/api/ads/upload-image', upload1.single('image'), (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+    const image = `http://localhost:5000/uploads/${req.file.filename}`;
+    res.status(200).json({ image });
+  } catch (error) {
+    console.error('Error uploading image:', error);
+    res.status(500).json({ message: 'Error uploading image' });
   }
 });
 
@@ -566,6 +731,7 @@ app.post('/api/news/:id/publish', async (req, res) => {
         seoTitle: newsItem.title,
         metaDiscription: newsItem.title,
         metaKeywords: newsItem.categories,
+        author: newsItem.author,
         link: newsItem.link,
         gemini_search_result: newsItem.gemini_search_result,
         date: new Date(Date.now()).toISOString().split('T')[0]

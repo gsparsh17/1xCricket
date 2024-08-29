@@ -6,6 +6,7 @@ import 'react-quill/dist/quill.snow.css';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import Sidebar from '../Components/Sidebar';
+import {jwtDecode} from 'jwt-decode';
 
 function NewsEditPage() {
     const { id } = useParams();
@@ -20,6 +21,21 @@ function NewsEditPage() {
     const [seoTitle, setSeoTitle] = useState('');
     const [metaDescription, setMetaDescription] = useState('');
     const [metaKeywords, setMetaKeywords] = useState([]);
+    const [author, setauthor] = useState('');
+    const [scheduledPublish, setScheduledPublish] = useState(false); // Toggle to enable scheduling
+    const [publishDateTime, setPublishDateTime] = useState(''); // Holds scheduled publish date and time
+
+
+  useEffect(() => {
+    const token = localStorage.getItem('token'); // or wherever the token is stored
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      if(decodedToken.isAdmin === true)
+        setauthor(decodedToken.username)
+      else
+      setauthor(decodedToken.username); // Assuming 'username' is a key in your token
+    }
+  }, []);
 
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
@@ -78,6 +94,7 @@ function NewsEditPage() {
             setNewsItem(data);
             setTitle(data.title);
             setContent(data.gemini_search_result);
+            setauthor(data.author);
             setPublished(data.published);
             setCategories(data.categories || ["Uncategoried"]);
             setSeoTitle(data.title);
@@ -88,22 +105,56 @@ function NewsEditPage() {
         }
     };
 
+    const extractKeywordsAndHashtags = (htmlString) => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlString, 'text/html');
+    
+        // Extract the full text content
+        const textContent = doc.body.textContent;
+    
+        // Regular expressions to find keywords and hashtags
+        const keywordsMatch = textContent.match(/Keywords:\s*(.*?)(?=\n|$)/i);
+        const hashtagsMatch = textContent.match(/Hashtags:\s*(.*?)(?=\n|$)/i);
+    
+        // Extract the matched content
+        const keywords = keywordsMatch ? keywordsMatch[1].trim() : 'No Keywords found';
+        const hashtags = hashtagsMatch ? hashtagsMatch[1].trim() : 'No Hashtags found';
+    
+        return { keywords, hashtags };
+    };
+
+    const removeKeywordsAndHashtags = (htmlString) => {
+        // Regular expressions to match and remove Keywords and Hashtags sections
+        const keywordsRegex = /<p><strong>Keywords:<\/strong><\/p>\s*<p>.*?<\/p>\s*/is;
+        const hashtagsRegex = /<p><strong>Hashtags:<\/strong><\/p>\s*<h1>.*?<\/h1>/is;
+    
+        // Remove Keywords and Hashtags sections from the HTML string
+        let updatedHtml = htmlString.replace(keywordsRegex, '');
+        updatedHtml = updatedHtml.replace(hashtagsRegex, '');
+    
+        return updatedHtml;
+    };
+
     const fetchNews = async () => {
         try {
             const response = await axios.get(`http://localhost:5000/api/news/${id}`);
             const data = response.data;
             const h2Text = extractH2FromHTML(data.gemini_search_result);
+            const pText = extractContentExceptH2(removeKeywordsAndHashtags(data.gemini_search_result))
+            const keyword = extractKeywordsAndHashtags(data.gemini_search_result).keywords
             setNewsItem(data);
             if(h2Text)
             setTitle(h2Text);
             else
             setTitle(data.title);
-            setContent(data.gemini_search_result);
+            setContent(pText);
+            setPublishDateTime(data.publishDateTime)
+            // setauthor(data.author);
             setPublished(data.published);
             setCategories(data.categories || ["Uncategoried"]);
             setSeoTitle(data.title);
             setMetaDescription(data.title);
-            setMetaKeywords(data.categories || [])
+            setMetaKeywords(keyword || [])
         } catch (error) {
             console.error('Error fetching news item:', error);
         }
@@ -114,6 +165,17 @@ function NewsEditPage() {
         const doc = parser.parseFromString(htmlString, 'text/html');
         const h2Element = doc.querySelector('h2');
         return h2Element ? h2Element.textContent : 'No <h2> found';
+      };
+
+    const extractContentExceptH2 = (htmlString) => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlString, 'text/html');
+      
+        // Remove all <h2> elements
+        doc.querySelectorAll('h2').forEach(h2 => h2.remove());
+      
+        // Return the remaining HTML as text
+        return doc.body.textContent.trim();
       };
 
     const handleImageUpload = async (event, isPublished) => {
@@ -155,53 +217,51 @@ function NewsEditPage() {
 
     const handleSave = async (publish) => {
         try {
+            const saveData = { 
+                title, 
+                content, 
+                image, 
+                categories, 
+                author, 
+                published,
+                seoTitle,
+                metaDescription,
+                metaKeywords,
+                publishDateTime,
+            };
+    
+            if (scheduledPublish && publishDateTime) {
+                // saveData.scheduledPublish = true;
+                saveData.publishDateTime = publishDateTime
+                console.log(publishDateTime); // Attach schedule info
+            }
+    
             if (publish) {
                 try{
-                await axios.put(`http://localhost:5000/api/published-news/${id}`, { 
-                    title, 
-                    content,  // Assuming `content` corresponds to `gemini_search_result`
-                    image, 
-                    categories,   // Assuming this corresponds to `imageUrl`
-                    published
-                });
+                await axios.put(`http://localhost:5000/api/published-news/${id}`, saveData);
+                navigate('/Admin');
+                }
+                catch{
+                await axios.put(`http://localhost:5000/api/news/${id}`, saveData);
+                navigate('/Admin');
+                }
+            } else {
+                await axios.put(`http://localhost:5000/api/news/${id}`, saveData);
                 navigate('/Admin');
             }
-            catch{
-                await axios.put(`http://localhost:5000/api/news/${id}`, { 
-                    title, 
-                    content,  // Assuming `content` corresponds to `gemini_search_result`
-                    image,
-                    categories,    // Assuming this corresponds to `imageUrl`
-                    published
-                });
-                navigate('/Admin');
-            }
-            }
-            else{
-            await axios.put(`http://localhost:5000/api/news/${id}`, { 
-                title, 
-                content,  // Assuming `content` corresponds to `gemini_search_result`
-                image,
-                categories,    // Assuming this corresponds to `imageUrl`
-                published
-            });
-            navigate('/Admin');
-        }
-             // Redirect back to admin panel
-        } 
-        
-        catch (error) {
+        } catch (error) {
             console.error('Error updating news item:', error);
         }
     };
-
+    
     const handlePublish = async () => {
         try {
             await axios.put(`http://localhost:5000/api/news/${id}`, { 
                 title, 
                 content,  // Assuming `content` corresponds to `gemini_search_result`
                 image,
-                categories,    // Assuming this corresponds to `imageUrl`
+                categories,
+                author,    // Assuming this corresponds to `imageUrl`
                 published
             });
             await axios.post(`http://localhost:5000/api/news/${id}/publish`);
@@ -229,7 +289,10 @@ function NewsEditPage() {
                     className="w-full p-2 border rounded m-4"
                 />
             </div>
-            
+            <div className="mb-4">
+                <label className="text-lg font-semibold inline-block">Author:</label>
+                <h1 className="p-2 rounded m-4 inline-block">{author}</h1>
+            </div>
                 <label className="block text-lg font-semibold">Content:</label>
                 <ReactQuill
                     value={content}
@@ -334,6 +397,26 @@ function NewsEditPage() {
                 ) : (
                     <span className="ml-4 text-sky-500 font-bold">Published</span>
                 )}
+                {!published && (
+    <div className="mb-4">
+        <label className="block text-lg font-semibold">Schedule Publish:</label>
+        <input
+            type="datetime-local"
+            value={publishDateTime}
+            onChange={(e) => setPublishDateTime(e.target.value)}
+            className="w-full p-2 border rounded m-4"
+        />
+        <label className="block text-lg font-semibold">
+            <input
+                type="checkbox"
+                checked={scheduledPublish}
+                onChange={() => setScheduledPublish(!scheduledPublish)}
+                className="mr-2"
+            />
+            Schedule this news for future publish
+        </label>
+    </div>
+)}
             </div>
         </div>
         </div>

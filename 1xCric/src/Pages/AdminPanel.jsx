@@ -224,6 +224,7 @@ function AdminNewsPanel() {
                         <tr className="bg-gray-200 text-center">
                             <th className="p-4 text-gray-600 font-semibold w-1/3">Title</th>
                             <th className="p-4 text-gray-600 font-semibold">Category</th>
+                            <th className="p-4 text-gray-600 font-semibold">Author</th>
                             <th className="p-4 text-gray-600 font-semibold">Date</th>
                             <th className="p-4 text-gray-600 font-semibold">Time</th>
                             <th className="p-4 text-gray-600 font-semibold">Published</th>
@@ -237,6 +238,7 @@ function AdminNewsPanel() {
                             <tr key={item._id} className="border-b text-center">
                                 <td className="p-4">{item.title}</td>
                                 <td className="p-4">{item.categories}</td>
+                                <td className="p-4">{item.author}</td>
                                 <td className="p-4">{new Date(item.date).toLocaleDateString()}</td>
                                 <td className="p-4">{fullDateTime.toLocaleTimeString()}</td>
                                 <td className="p-4">

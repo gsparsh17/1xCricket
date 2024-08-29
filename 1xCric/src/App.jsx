@@ -23,6 +23,7 @@ import AdminAddUser from './Pages/AdminAddUser';
 import AdminUsersPage from './Pages/AdminUsersPage';
 import AdminEditUserPage from './Pages/AdminEditUserPage';
 import AdminAddNewsPage from './Pages/AdminAddNewsPage';
+import AdminAdsManager from './Pages/AdminAdsManager';
 
 function App() {
   const location = useLocation();
@@ -43,52 +44,62 @@ function App() {
         <Route path="/Admin/AddNews" element={<AdminAddNewsPage/>}/>
         <Route path="/Admin" element={
           <PrivateRoute>
-            <AdminPanel />
+            <AdminPanel/>
+          </PrivateRoute>
+        } />
+        <Route path="/Admin/AddNews" element={
+          <PrivateRoute>
+            <AdminAddNewsPage/>
           </PrivateRoute>
         } />
         <Route path="/Admin/edit/:id" element={
-          <PrivateRoute>
-            <NewsEditPage />
+          <PrivateRoute authorOnly={true}>
+            <NewsEditPage/>
           </PrivateRoute>
         } />
         <Route path="/Admin/Users/edit/:id" element={
-          <PrivateRoute>
-            <AdminEditUserPage />
+          <PrivateRoute adminOnly={true}>
+            <AdminEditUserPage/>
           </PrivateRoute>
         } />
         <Route path="/Admin/Users" element={
-          <PrivateRoute>
+          <PrivateRoute adminOnly={true}>
             <AdminUsersPage/>
           </PrivateRoute>
         } />
         <Route path="/Admin/Dashboard" element={
           <PrivateRoute>
-            <AdminDashboard />
+            <AdminDashboard/>
           </PrivateRoute>
         } />
         <Route path="/Admin/Published" element={
           <PrivateRoute>
-            <AdminPublished />
+            <AdminPublished/>
           </PrivateRoute>
         } />
         <Route path="/Admin/Settings" element={
           <PrivateRoute>
-            <AdminSettings />
+            <AdminSettings/>
           </PrivateRoute>
         } />
         <Route path="/Admin/Categories" element={
           <PrivateRoute>
-            <AdminCategories />
+            <AdminCategories/>
           </PrivateRoute>
         } />
         <Route path="/Admin/AddUser" element={
           <PrivateRoute adminOnly={true}>
-            <AdminAddUser />
+            <AdminAddUser/>
+          </PrivateRoute>
+        } />
+        <Route path="/Admin/AdsManager" element={
+          <PrivateRoute adminOnly={true}>
+            <AdminAdsManager/>
           </PrivateRoute>
         } />
       </Routes>
       <Tabbar navigationData={navigationData}/>
-      {!isAdminRoute && <Footer />}
+      {!isAdminRoute && <Footer/>}
     </div>
   )
 }

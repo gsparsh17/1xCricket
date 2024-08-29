@@ -42,6 +42,17 @@ function Home() {
 
 const [news, setNews] = useState([]);
 
+const [ads, setAds] = useState([]);
+
+    const fetchAds = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/ads');
+        const pageAds = response.data;
+        setAds(pageAds);
+      } catch (err) {
+        console.error('Error fetching ads:', err);
+      }
+    };
 useEffect(() => {
   // Define an async function inside the effect
   const fetchNews = async () => {
@@ -58,6 +69,7 @@ useEffect(() => {
     }
   };
   fetchNews();
+  fetchAds();
 }, []);
 
 function limitWords(content, wordLimit) {
@@ -75,8 +87,30 @@ function decodeHtmlEntities(str) {
 
   return (
     <div className="z-40 flex overflow-hidden flex-col bg-gradient-to-b to-sky-100 from-white bg-fixed">
+      
+
   <div className="up h-screen max-md:h-0">
-      <div className="flex justify-between gap-2 p-8 px-[4vw] w-full pt-[14vw] max-md:hidden">
+  {ads.map(ad => (
+  ad.category === "Global" && (
+    <div key={ad._id} className="relative ad-item shadow-lg rounded-md hover:shadow-xl transition-shadow md:mt-24 mt-16 flex justify-center m-auto">
+      <img src={ad.image} alt={ad.title} className="ad-image w-[780px] h-[90px] object-cover rounded-md" />
+      <div className="absolute inset-0 items-end w-[800px] flex justify-center m-auto">
+        <div className="overlay bg-black bg-opacity-25 text-white p-2 rounded-md w-full mx-2 text-center">
+          <a
+            href={ad.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ad-title text-lg font-semibold underline"
+          >
+            {ad.title}
+          </a>
+        </div>
+      </div>
+    </div>
+     )
+     ))}
+
+      <div className="flex justify-between gap-2 p-8 px-[4vw] w-full md:pt-[2vw] pt-[] max-md:hidden">
         <motion.div initial={{x:"-50%", opacity:0, width:"10%"}} animate={{x: "0%", opacity:20, width:"20%"}} transition={ {ease: "linear", duration: 0.7}}><img className="w-60" src={pic2} alt="" /></motion.div>
         <motion.div className='w-[740px] px-12 mt-16'  initial={{opacity:0}} animate={{opacity:10}} transition={ {ease: "linear", duration: 0.7, delay:1.4}}>
             <img
@@ -89,7 +123,7 @@ function decodeHtmlEntities(str) {
         </motion.div>
         <motion.div initial={{x:"50%", opacity:0}} animate={{x:"0%", opacity:10}} transition={ {ease: "linear", duration: 0.7, delay:0.7}}><img className="w-60" src={pic1} alt="" /></motion.div>
         </div>
-        <div className="flex flex-col -mt-2 justify-center py-4 w-full text-base font-medium text-sky-400 max-md:max-w-full max-md:bg-zinc-900 max-md:pt-12">
+        <div className="flex flex-col md:-mt-5 -mt-10 justify-center md:py-4 w-full md:text-base text-sm md:font-medium text-sky-400 max-md:max-w-full max-md:bg-zinc-900 max-md:pt-12">
       <motion.div
         initial={{ x: 0 }}
         animate={{ x: "-100%" }}
@@ -103,17 +137,17 @@ function decodeHtmlEntities(str) {
         {news.map((item, index) => (
           <div
             key={index}
-            className="flex gap-3 items-center px-6 py-3 bg-white bg-opacity-10 rounded-[46px] max-md:px-5"
+            className="flex gap-3 items-center px-3 py-3 bg-white bg-opacity-10 rounded-[46px] max-md:px-3"
           >{item.imageUrl ? (
             <img
     src={item.imageUrl}
     alt={item.title}
-    className="shrink-0 self-stretch w-14 rounded-full aspect-square"/>
+    className="md:w-16 w-12 rounded-full aspect-square"/>
 ) : (
   <img
     src={`http://localhost:5000${item.imageUrl}`}
     alt={item.title}
-    className="shrink-0 self-stretch w-14 rounded-full aspect-square"/>)}
+    className="shrink-0 self-stretch md:w-14 w-8 rounded-full aspect-square"/>)}
             <div className="w-[275px] hover:underline"><a href={`/News/${item._id}`}>{limitWords(decodeHtmlEntities(item.title), 7)}</a></div>
           </div>
         ))}

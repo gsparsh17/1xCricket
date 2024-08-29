@@ -26,10 +26,10 @@ const CategoryNewsSection = ({ category }) => {
     }
 
     return (
-        <div className="w-full p-5 py-20 px-4 sm:px-8 md:px-12 flex flex-col md:flex-row">
+        <div className="w-full p-5 md:py-20 -px-4 sm:px-8 md:px-12 flex flex-col md:flex-row">
             
-  <div className='w-full md:w-3/4 pl-8'>
-  <div className="flex justify-between w-full max-w-screen-xl px-4 mb-20">
+  <div className='w-full md:w-3/4 md:pl-8'>
+  <div className="flex justify-between w-full max-w-screen-xl px-4 md:mb-20 mb-12">
     <h2 className="text-5xl font-bold italic text-black tracking-wide max-md:text-3xl">
       {category}
     </h2>
