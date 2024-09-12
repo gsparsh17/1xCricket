@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';import Sidebar from '../Components/Sideb
 
 function AdminPublished() {
     const [publishedNews, setPublishedNews] = useState([]);
-    
+    const [postingToFb, setPostingToFb] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
 
@@ -30,6 +30,27 @@ function AdminPublished() {
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
             setCurrentPage(page);
+        }
+    };
+
+    const stripHtml = (html) => {
+        const tempElement = document.createElement("div");
+        tempElement.innerHTML = html;
+        return tempElement.textContent || tempElement.innerText || "";
+      };
+
+    const postToFacebook = async (title, content) => {
+        try {
+            setPostingToFb(title);  // To show loading state on the button
+            const response = await axios.post('http://localhost:5000/api/post_facebook', {
+                title,
+                content
+            });
+            alert('Successfully posted to Facebook');
+        } catch (error) {
+            alert('Failed to post to Facebook');
+        } finally {
+            setPostingToFb(null);  // Reset loading state
         }
     };
   return (
@@ -69,8 +90,15 @@ function AdminPublished() {
                                         <span className="text-red-500 font-semibold">No</span>
                                     )}
                                 </td>
-                                <td className="p-4">
+                                <td className="p-2">
                                     <Link to={`/Admin/edit/${item._id}`} className="text-blue-500 hover:underline">Edit</Link>
+                                    <button
+                                            onClick={() => postToFacebook(item.title, stripHtml(item.gemini_search_result))}
+                                            className="text-blue-500 hover:underline"
+                                            disabled={postingToFb === item.title}
+                                        >
+                                            {postingToFb === item.title ? 'Posting...' : 'Post to Facebook'}
+                                    </button>
                                 </td>
                             </tr>
                             );

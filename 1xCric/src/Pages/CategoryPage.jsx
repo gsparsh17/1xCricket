@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import SideNewsBar from '../Components/SideNewsBar';
+import axios from 'axios';
 
 function CategoryPage() {
   const { category } = useParams(); // Get the category from the URL
@@ -11,6 +12,7 @@ function CategoryPage() {
 
     useEffect(() => {
         fetchNews(currentPage);
+        fetchAds();
     }, [currentPage, category]);
 
     const fetchNews = async (page) => {
@@ -47,9 +49,41 @@ function limitWords(content, wordLimit) {
     textarea.innerHTML = str;
     return textarea.value;
 }
+const [ads, setAds] = useState([]);
+
+    const fetchAds = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/ads');
+        const pageAds = response.data;
+        setAds(pageAds);
+      } catch (err) {
+        console.error('Error fetching ads:', err);
+      }
+    };
 
   return (
+    <div>
+      {ads.map(ad => (
+  ad.category === "Global" && (
+    <div key={ad._id} className="relative ad-item rounded-md hover:shadow-xl transition-shadow flex justify-center pt-20 m-auto -mb-20">
+      <img src={ad.image} alt={ad.title} className="ad-image w-[780px] h-[90px] object-cover rounded-md" />
+      <div className="absolute inset-0 items-end w-[800px] max-md:w-[300px] flex justify-center m-auto">
+        <div className="overlay bg-black bg-opacity-25 text-white p-2 rounded-md w-full mx-2 text-center">
+          <a
+            href={ad.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ad-title text-lg font-semibold underline"
+          >
+            {ad.title}
+          </a>
+        </div>
+      </div>
+    </div>
+     )
+     ))}
     <div className="w-full p-5 px-4 sm:px-8 md:px-16 flex flex-col md:flex-row bg-gradient-to-b to-sky-100 from-white bg-fixed">
+      
     <div className='w-full md:w-3/4'>
         <h1 className="text-2xl font-bold mb-5 mt-32 text-center">{category} News</h1>
         <ul>
@@ -100,6 +134,7 @@ function limitWords(content, wordLimit) {
         </div>
     </div>
     <SideNewsBar category={category}/>
+</div>
 </div>
   );
 }

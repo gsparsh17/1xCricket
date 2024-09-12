@@ -24,6 +24,7 @@ import AdminUsersPage from './Pages/AdminUsersPage';
 import AdminEditUserPage from './Pages/AdminEditUserPage';
 import AdminAddNewsPage from './Pages/AdminAddNewsPage';
 import AdminAdsManager from './Pages/AdminAdsManager';
+import MediaLibrary from './Pages/MediaLibrary';
 
 function App() {
   const location = useLocation();
@@ -50,6 +51,11 @@ function App() {
         <Route path="/Admin/AddNews" element={
           <PrivateRoute>
             <AdminAddNewsPage/>
+          </PrivateRoute>
+        } />
+        <Route path="/Admin/MediaLibrary" element={
+          <PrivateRoute>
+            <MediaLibrary/>
           </PrivateRoute>
         } />
         <Route path="/Admin/edit/:id" element={

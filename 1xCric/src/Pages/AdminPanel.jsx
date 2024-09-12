@@ -249,7 +249,7 @@ function AdminNewsPanel() {
                                     )}
                                 </td>
                                 <td className="p-4">
-                                    <Link to={`/Admin/edit/${item._id}`} className="text-blue-500 hover:underline">Edit</Link>
+                                    <Link to={`/Admin/edit/${item._id}`} className="text-blue-500 hover:underline m-1">Edit</Link>
                                 </td>
                             </tr>
                             );

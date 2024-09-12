@@ -39,7 +39,9 @@ function Sidebar() {
                     <li className="mb-6">
                         <Link to="/Admin/AdsManager" className="text-xl hover:text-gray-300">Ads Manager</Link>
                     </li>
-                    
+                    <li className="mb-6">
+                        <Link to="/Admin/MediaLibrary" className="text-xl hover:text-gray-300 text-blue-300">Media Library</Link>
+                    </li>
                 </ul>
             </div>
   )

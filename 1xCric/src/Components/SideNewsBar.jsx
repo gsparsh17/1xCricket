@@ -126,7 +126,7 @@ function SideNewsBar({category}) {
           </div>
         </div>
       </div>
-      <div className="flex mt-4 m-8 w-full">
+      <div className="flex mt-4 m-8">
       {ads.map(ad => (
   ad.category === "Global" && (
     <div key={ad._id} className="ad-item bg-white p-4 shadow-lg rounded-md hover:shadow-xl transition-shadow">

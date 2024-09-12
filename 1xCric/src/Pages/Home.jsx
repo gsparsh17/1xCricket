@@ -92,9 +92,9 @@ function decodeHtmlEntities(str) {
   <div className="up h-screen max-md:h-0">
   {ads.map(ad => (
   ad.category === "Global" && (
-    <div key={ad._id} className="relative ad-item shadow-lg rounded-md hover:shadow-xl transition-shadow md:mt-24 mt-16 flex justify-center m-auto">
+    <div key={ad._id} className="relative ad-item rounded-md hover:shadow-xl transition-shadow md:mt-24 mt-16 flex justify-center m-auto">
       <img src={ad.image} alt={ad.title} className="ad-image w-[780px] h-[90px] object-cover rounded-md" />
-      <div className="absolute inset-0 items-end w-[800px] flex justify-center m-auto">
+      <div className="absolute inset-0 items-end w-[800px] max-md:w-[300px] flex justify-center m-auto">
         <div className="overlay bg-black bg-opacity-25 text-white p-2 rounded-md w-full mx-2 text-center">
           <a
             href={ad.link}
@@ -132,7 +132,7 @@ function decodeHtmlEntities(str) {
           repeat: Infinity,
           duration: 50,
         }}
-        className="flex gap-5 items-center max-md:max-w-full max-md:mb-4 max-md:mt-8"
+        className="flex gap-5 items-center max-md:max-w-full max-md:mb-1 max-md-:mt-1"
       >
         {news.map((item, index) => (
           <div
@@ -154,56 +154,72 @@ function decodeHtmlEntities(str) {
       </motion.div>
     </div>
       </div>
-      <div className="mt-0 max-md:mt-44">
+      <div className="max-md:mt-64 mt-0">
       <CategorySection category="Cricket" />
       </div>
       <div className="px-20 py-20 w-full up max-md:px-5 max-md:max-w-full">
         <div className="flex gap-5 max-md:flex-col">
-          <div className="flex flex-col w-[67%] max-md:ml-0 max-md:w-full">
-            <div className="flex flex-col grow px-8 py-8 w-full bg-white rounded-2xl max-md:px-5 max-md:mt-10 max-md:max-w-full">
-              <img
-                loading="lazy"
-                srcSet="https://cdn.builder.io/api/v1/image/assets/TEMP/6a98ea9947af457fad4a11e9657fa40f24b5c858990d2aa50bc3187ecab8b1a8?apiKey=6beafd8d1b514e6ebc76a09543c68ffc&&apiKey=6beafd8d1b514e6ebc76a09543c68ffc&width=100 100w, https://cdn.builder.io/api/v1/image/assets/TEMP/6a98ea9947af457fad4a11e9657fa40f24b5c858990d2aa50bc3187ecab8b1a8?apiKey=6beafd8d1b514e6ebc76a09543c68ffc&&apiKey=6beafd8d1b514e6ebc76a09543c68ffc&width=200 200w, https://cdn.builder.io/api/v1/image/assets/TEMP/6a98ea9947af457fad4a11e9657fa40f24b5c858990d2aa50bc3187ecab8b1a8?apiKey=6beafd8d1b514e6ebc76a09543c68ffc&&apiKey=6beafd8d1b514e6ebc76a09543c68ffc&width=400 400w, https://cdn.builder.io/api/v1/image/assets/TEMP/6a98ea9947af457fad4a11e9657fa40f24b5c858990d2aa50bc3187ecab8b1a8?apiKey=6beafd8d1b514e6ebc76a09543c68ffc&&apiKey=6beafd8d1b514e6ebc76a09543c68ffc&width=800 800w, https://cdn.builder.io/api/v1/image/assets/TEMP/6a98ea9947af457fad4a11e9657fa40f24b5c858990d2aa50bc3187ecab8b1a8?apiKey=6beafd8d1b514e6ebc76a09543c68ffc&&apiKey=6beafd8d1b514e6ebc76a09543c68ffc&width=1200 1200w, https://cdn.builder.io/api/v1/image/assets/TEMP/6a98ea9947af457fad4a11e9657fa40f24b5c858990d2aa50bc3187ecab8b1a8?apiKey=6beafd8d1b514e6ebc76a09543c68ffc&&apiKey=6beafd8d1b514e6ebc76a09543c68ffc&width=1600 1600w, https://cdn.builder.io/api/v1/image/assets/TEMP/6a98ea9947af457fad4a11e9657fa40f24b5c858990d2aa50bc3187ecab8b1a8?apiKey=6beafd8d1b514e6ebc76a09543c68ffc&&apiKey=6beafd8d1b514e6ebc76a09543c68ffc&width=2000 2000w, https://cdn.builder.io/api/v1/image/assets/TEMP/6a98ea9947af457fad4a11e9657fa40f24b5c858990d2aa50bc3187ecab8b1a8?apiKey=6beafd8d1b514e6ebc76a09543c68ffc&&apiKey=6beafd8d1b514e6ebc76a09543c68ffc"
-                className="object-contain w-full rounded-2xl aspect-[2.39] max-md:max-w-full"
-              />
-              <div className="mt-6 text-lg leading-6 text-neutral-400 max-md:max-w-full">
-                In the heart of every cricket enthusiast lies a deep-seated
-                passion for the game that transcends generations. It's a sport
-                that has evolved over centuries, blending tradition with
-                innovation to create an unparalleled spectacle. Our latest
-                cricket ad, &quot;Cricket Fusion,&quot; celebrates this unique
-                blend, bringing together the timeless charm of cricket's
-                heritage.
-              </div>
-              <div className="self-start px-9 py-3 mt-7 text-sm font-bold text-white bg-sky-400 rounded-3xl max-md:px-5">
-                View Now
+        <div className="flex flex-col w-[67%] max-md:ml-0 max-md:w-full">
+      {ads.map(ad => (
+        ad.category === 'Announcement' && (
+        <div key={ad._id} className="flex flex-col grow px-4 py-4 w-full bg-white rounded-2xl max-md:px-5 max-md:mt-10 max-md:max-w-full relative">
+          <img
+            loading="lazy"
+            src={ad.image}
+            alt={ad.title}
+            className="object-contain w-full rounded-2xl aspect-[2.39] max-md:max-w-full"
+          />
+          <div className="mt-2 text-lg leading-6 text-neutral-400 max-md:max-w-full">
+            {ad.title}
+          </div>
+
+          <a href={ad.link}><button className="self-start px-9 py-3 mt-7 text-sm font-bold text-white bg-sky-400 rounded-3xl max-md:px-5">
+            View Now
+          </button></a>
+        </div>
+        )
+      ))}
+    </div>
+     <div className="flex flex-col">
+          {ads.map(ad => (
+        ad.category === 'HomeAdSection1' && (
+          <div key={ad._id} className="relative ad-item bg-white p-1 shadow-lg rounded-md hover:shadow-xl transition-shadow m-2">
+            <img src={ad.image} alt={ad.title} className="ad-image w-full h-48 object-cover rounded-md" />
+            <div className="absolute inset-0 flex items-end text-center">
+              <div className="overlay bg-black bg-opacity-50 text-white p-2 rounded-md w-full">
+                <a
+                  href={ad.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="ad-title text-lg font-semibold underline"
+                >
+                  {ad.title}
+                </a>
               </div>
             </div>
           </div>
-          <div className="flex flex-col ml-5 w-[33%] max-md:ml-0 max-md:w-full">
-            <div className="flex flex-col grow p-8 w-full text-lg font-bold text-white whitespace-nowrap rounded-2xl max-md:px-5 max-md:mt-10">
-              <div className="flex relative flex-col px-4 pt-72 pb-4 rounded-xl aspect-[0.945] max-md:pt-24">
-                <img
-                  loading="lazy"
-                  srcSet="https://cdn.builder.io/api/v1/image/assets/TEMP/e80e28f9d29a91fcd4094c8e10f67c95cee33ad5247312562a77e1f47e19fd46?apiKey=6beafd8d1b514e6ebc76a09543c68ffc&&apiKey=6beafd8d1b514e6ebc76a09543c68ffc&width=100 100w, https://cdn.builder.io/api/v1/image/assets/TEMP/e80e28f9d29a91fcd4094c8e10f67c95cee33ad5247312562a77e1f47e19fd46?apiKey=6beafd8d1b514e6ebc76a09543c68ffc&&apiKey=6beafd8d1b514e6ebc76a09543c68ffc&width=200 200w, https://cdn.builder.io/api/v1/image/assets/TEMP/e80e28f9d29a91fcd4094c8e10f67c95cee33ad5247312562a77e1f47e19fd46?apiKey=6beafd8d1b514e6ebc76a09543c68ffc&&apiKey=6beafd8d1b514e6ebc76a09543c68ffc&width=400 400w, https://cdn.builder.io/api/v1/image/assets/TEMP/e80e28f9d29a91fcd4094c8e10f67c95cee33ad5247312562a77e1f47e19fd46?apiKey=6beafd8d1b514e6ebc76a09543c68ffc&&apiKey=6beafd8d1b514e6ebc76a09543c68ffc&width=800 800w, https://cdn.builder.io/api/v1/image/assets/TEMP/e80e28f9d29a91fcd4094c8e10f67c95cee33ad5247312562a77e1f47e19fd46?apiKey=6beafd8d1b514e6ebc76a09543c68ffc&&apiKey=6beafd8d1b514e6ebc76a09543c68ffc&width=1200 1200w, https://cdn.builder.io/api/v1/image/assets/TEMP/e80e28f9d29a91fcd4094c8e10f67c95cee33ad5247312562a77e1f47e19fd46?apiKey=6beafd8d1b514e6ebc76a09543c68ffc&&apiKey=6beafd8d1b514e6ebc76a09543c68ffc&width=1600 1600w, https://cdn.builder.io/api/v1/image/assets/TEMP/e80e28f9d29a91fcd4094c8e10f67c95cee33ad5247312562a77e1f47e19fd46?apiKey=6beafd8d1b514e6ebc76a09543c68ffc&&apiKey=6beafd8d1b514e6ebc76a09543c68ffc&width=2000 2000w, https://cdn.builder.io/api/v1/image/assets/TEMP/e80e28f9d29a91fcd4094c8e10f67c95cee33ad5247312562a77e1f47e19fd46?apiKey=6beafd8d1b514e6ebc76a09543c68ffc&&apiKey=6beafd8d1b514e6ebc76a09543c68ffc"
-                  className="object-cover absolute inset-0 size-full"
-                />
-                <div className="relative px-16 py-4 rounded-xl bg-black bg-opacity-50 max-md:px-5">
-                  Ad
-                </div>
-              </div>
-              <div className="flex relative flex-col px-4 pt-12 pb-4 mt-7 rounded-xl aspect-[2.858]">
-                <img
-                  loading="lazy"
-                  srcSet="https://cdn.builder.io/api/v1/image/assets/TEMP/9bc812203e5dbded880b5c4d30c8e4d4d655374d499407eae9d37a3d9c336063?apiKey=6beafd8d1b514e6ebc76a09543c68ffc&&apiKey=6beafd8d1b514e6ebc76a09543c68ffc&width=100 100w, https://cdn.builder.io/api/v1/image/assets/TEMP/9bc812203e5dbded880b5c4d30c8e4d4d655374d499407eae9d37a3d9c336063?apiKey=6beafd8d1b514e6ebc76a09543c68ffc&&apiKey=6beafd8d1b514e6ebc76a09543c68ffc&width=200 200w, https://cdn.builder.io/api/v1/image/assets/TEMP/9bc812203e5dbded880b5c4d30c8e4d4d655374d499407eae9d37a3d9c336063?apiKey=6beafd8d1b514e6ebc76a09543c68ffc&&apiKey=6beafd8d1b514e6ebc76a09543c68ffc&width=400 400w, https://cdn.builder.io/api/v1/image/assets/TEMP/9bc812203e5dbded880b5c4d30c8e4d4d655374d499407eae9d37a3d9c336063?apiKey=6beafd8d1b514e6ebc76a09543c68ffc&&apiKey=6beafd8d1b514e6ebc76a09543c68ffc&width=800 800w, https://cdn.builder.io/api/v1/image/assets/TEMP/9bc812203e5dbded880b5c4d30c8e4d4d655374d499407eae9d37a3d9c336063?apiKey=6beafd8d1b514e6ebc76a09543c68ffc&&apiKey=6beafd8d1b514e6ebc76a09543c68ffc&width=1200 1200w, https://cdn.builder.io/api/v1/image/assets/TEMP/9bc812203e5dbded880b5c4d30c8e4d4d655374d499407eae9d37a3d9c336063?apiKey=6beafd8d1b514e6ebc76a09543c68ffc&&apiKey=6beafd8d1b514e6ebc76a09543c68ffc&width=1600 1600w, https://cdn.builder.io/api/v1/image/assets/TEMP/9bc812203e5dbded880b5c4d30c8e4d4d655374d499407eae9d37a3d9c336063?apiKey=6beafd8d1b514e6ebc76a09543c68ffc&&apiKey=6beafd8d1b514e6ebc76a09543c68ffc&width=2000 2000w, https://cdn.builder.io/api/v1/image/assets/TEMP/9bc812203e5dbded880b5c4d30c8e4d4d655374d499407eae9d37a3d9c336063?apiKey=6beafd8d1b514e6ebc76a09543c68ffc&&apiKey=6beafd8d1b514e6ebc76a09543c68ffc"
-                  className="object-cover absolute inset-0 size-full"
-                />
-                <div className="relative px-16 py-4 rounded-xl bg-black bg-opacity-50 max-md:px-5">
-                  Ad
-                </div>
+        )
+      ))}
+      {ads.map(ad => (
+        ad.category === 'HomeAdSection1' && (
+          <div key={ad._id} className="relative ad-item bg-white p-1 shadow-lg rounded-md hover:shadow-xl transition-shadow m-2">
+            <img src={ad.image} alt={ad.title} className="ad-image w-full h-48 object-cover rounded-md" />
+            <div className="absolute inset-0 flex items-end text-center">
+              <div className="overlay bg-black bg-opacity-50 text-white p-2 rounded-md w-full">
+                <a
+                  href={ad.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="ad-title text-lg font-semibold underline"
+                >
+                  {ad.title}
+                </a>
               </div>
             </div>
           </div>
+        )
+      ))}
+      </div>
         </div>
       </div>
       <CategorySection category={"Fantasy Cricket"}/>

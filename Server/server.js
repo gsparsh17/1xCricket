@@ -60,6 +60,14 @@ mongoose.connect('mongodb://localhost:27017/newsdb', {
 
   const User = mongoose.model('User', UserSchema);
 
+  const mediaSchema = new mongoose.Schema({
+    imageUrl: { type: String, required: true },
+    uploadDate: { type: Date, default: Date.now },
+    category: { type: String, default: 'Uncategorized' }
+  });
+  
+  const Media = mongoose.model('Media', mediaSchema);
+
 UserSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
   const salt = await bcrypt.genSalt(10);
@@ -466,6 +474,7 @@ app.put('/api/news/:id', async (req, res) => {
   }
 });
 
+
 app.post('/api/news', async (req, res) => {
   try {
     const newNewsItem = new News({
@@ -607,6 +616,36 @@ app.get('/api/ads', async (req, res) => {
   }
 });
 
+app.get('/api/media', async (req, res) => {
+  try {
+    const mediaItems = await Media.find().sort({ uploadDate: -1 });
+    res.json(mediaItems);
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to fetch media items', error: err.message });
+  }
+});
+
+app.delete('/api/media/:id', async (req, res) => {
+  try {
+    const mediaItem = await Media.findById(req.params.id);
+    if (!mediaItem) {
+      return res.status(404).json({ message: 'Media not found' });
+    }
+
+    // Delete the image file
+    fs.unlink(path.join(__dirname, mediaItem.imageUrl), (err) => {
+      if (err) {
+        return res.status(500).json({ message: 'Failed to delete image file', error: err.message });
+      }
+    });
+
+    await mediaItem.remove();
+    res.json({ message: 'Media deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to delete media item', error: err.message });
+  }
+});
+
 // Get ad by ID
 app.get('/api/ads/:id', async (req, res) => {
   try {
@@ -661,6 +700,11 @@ app.post('/api/ads/:id/upload-image', upload1.single('image'), async (req, res) 
     if (!ad) {
       return res.status(404).send('Ad not found');
     }
+    const newMedia = new Media({
+      imageUrl: req.body.image,
+      category: req.body.category || 'Uncategorized'
+    });
+      await newMedia.save();
     res.json(ad);
   } catch (err) {
     console.error('Error during file upload:', err);
@@ -674,6 +718,11 @@ app.post('/api/ads/upload-image', upload1.single('image'), (req, res) => {
       return res.status(400).json({ message: 'No file uploaded' });
     }
     const image = `http://localhost:5000/uploads/${req.file.filename}`;
+    const newMedia = new Media({
+      imageUrl: req.body.image,
+      category: req.body.category || 'Uncategorized'
+    });
+      newMedia.save();
     res.status(200).json({ image });
   } catch (error) {
     console.error('Error uploading image:', error);
@@ -692,6 +741,11 @@ app.post('/api/news/:id/upload-image', upload1.single('image'), async (req, res)
       return res.status(404).send('News item not found');
     }
     res.json(newsItem);
+    const newMedia = new Media({
+      imageUrl,
+      category: req.body.category || 'Uncategorized'
+    });
+      await newMedia.save();
   } catch (err) {
     console.error('Error during file upload:', err);
     res.status(500).send(err.message);
@@ -708,6 +762,11 @@ app.post('/api/published-news/:id/upload-image', upload1.single('image'), async 
     if (!newsItem) {
       return res.status(404).send('News item not found');
     }
+    const newMedia = new Media({
+      imageUrl,
+      category: req.body.category || 'Uncategorized'
+    });
+      await newMedia.save();
     res.json(newsItem);
   } catch (err) {
     console.error('Error during file upload:', err);
@@ -747,4 +806,26 @@ app.post('/api/news/:id/publish', async (req, res) => {
   }
 });
 
+const ACCESS_TOKEN = "EAARUc5Gxg7wBO9Mm90MZCZCd5JJWapnG1FA1vnI3fs2dXThjC2b32XFea0xDKs5qbyU2fyWZA3ZB4Ciz2HRlGjZCuFI7hgiXsVgeVASV7LHa4ZAw969rANIr8OFGmw8E4HVbIA6opT2YyV1sm51DHLMXqQHzo3eB6dn7k5tAuRX2mDqcTTrlVbREALGyAhyCCpZC6p1btQuMILAf5kAoVPsJrE8REcIkyst";
+
+// Route to post to Facebook
+app.post('/api/post_facebook', async (req, res) => {
+  const { title, content } = req.body;
+
+  const message = `Check out our latest news: ${title}\n\n${content}`;
+  
+  try {
+    const response = await axios.post(
+      `https://graph.facebook.com/v16.0/me/feed`,
+      {
+        message: message,
+        access_token: ACCESS_TOKEN
+      }
+    );
+    res.status(200).json({ message: 'Successfully posted to Facebook', response: response.data });
+  } catch (error) {
+    console.error('Error posting to Facebook:', error);
+    res.status(500).json({ error: error.response ? error.response.data : 'Unknown error' });
+  }
+});
 

@@ -66,32 +66,48 @@ function Schedule() {
     };
 
     fetchMatches();
+    fetchAds();
   }, []);
+  const [ads, setAds] = useState([]);
+
+    const fetchAds = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/ads');
+        const pageAds = response.data;
+        setAds(pageAds);
+      } catch (err) {
+        console.error('Error fetching ads:', err);
+      }
+    };
 
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
   };
 
   return (
+    <div>
+      {ads.map(ad => (
+  ad.category === "Global" && (
+    <div key={ad._id} className="relative ad-item rounded-md hover:shadow-xl transition-shadow flex justify-center pt-20 m-auto -mb-20">
+      <img src={ad.image} alt={ad.title} className="ad-image w-[780px] h-[90px] object-cover rounded-md" />
+      <div className="absolute inset-0 items-end w-[800px] max-md:w-[300px] flex justify-center m-auto">
+        <div className="overlay bg-black bg-opacity-25 text-white p-2 rounded-md w-full mx-2 text-center">
+          <a
+            href={ad.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ad-title text-lg font-semibold underline"
+          >
+            {ad.title}
+          </a>
+        </div>
+      </div>
+    </div>
+     )
+     ))}
     <div className="flex overflow-hidden flex-col bg-gradient-to-b to-sky-100 from-white bg-fixed pt-20">
   {/* Top Bar */}
-  <div className="flex flex-col justify-center items-start px-5 sm:px-8 md:px-16 py-1.5 w-full text-sm font-medium bg-sky-100 text-neutral-400">
-    <div className="flex gap-3.5 items-center flex-wrap">
-      <div className="self-stretch my-auto">Home</div>
-      <img
-        loading="lazy"
-        src="https://cdn.builder.io/api/v1/image/assets/TEMP/09b9ccaa9e9e59b01f338af5479f41295e6a3ac9d83f55841f853e1edc51aa6e?apiKey=6beafd8d1b514e6ebc76a09543c68ffc&&apiKey=6beafd8d1b514e6ebc76a09543c68ffc"
-        className="object-contain shrink-0 aspect-square w-[20px] sm:w-[24px]"
-      />
-      <div className="self-stretch my-auto">Match schedule</div>
-      <img
-        loading="lazy"
-        src="https://cdn.builder.io/api/v1/image/assets/TEMP/09b9ccaa9e9e59b01f338af5479f41295e6a3ac9d83f55841f853e1edc51aa6e?apiKey=6beafd8d1b514e6ebc76a09543c68ffc&&apiKey=6beafd8d1b514e6ebc76a09543c68ffc"
-        className="object-contain shrink-0 aspect-square w-[20px] sm:w-[24px]"
-      />
-      <div className="self-stretch my-auto">{selectedCategory}</div>
-    </div>
-  </div>
+  
 
   {/* Main Content */}
   <div className="flex flex-col md:flex-row px-5 sm:px-8 md:px-20 mt-16 mb-8 w-full gap-5">
@@ -146,6 +162,7 @@ function Schedule() {
     {/* Sidebar */}
       <SideNewsBar category={""} />
   </div>
+</div>
 </div>
 
   );

@@ -6,7 +6,7 @@ const AdminAdsManager = () => {
   const [ads, setAds] = useState([]);
   const [newAd, setNewAd] = useState({ image:'', link: '', title: '', category: 'Global' });
   const [editAd, setEditAd] = useState(null);
-  const categories = ['Global', 'Cricket', 'Football', 'Tennis', 'Basketball']; // Add all categories here
+  const categories = ['Global', 'Cricket', 'Football', 'Tennis', 'Basketball', 'HomeAdSection1', 'HomeAdSection2', 'Announcement']; // Add all categories here
 
   // Fetch all ads
   const fetchAds = async () => {
