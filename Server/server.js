@@ -33,24 +33,60 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/newsdb', {
-}).then(async () => {
-    console.log('Connected to MongoDB...');
+// mongoose.connect('mongodb://localhost:27017/newsdb', {
+// }).then(async () => {
+//     console.log('Connected to MongoDB...');
 
-    // Fetch and store data automatically on server start
-    try {
-      await fetchAndStoreNews();
-      console.log('Initial news data fetched and stored successfully');
-    } catch (err) {
-      console.error('Failed to fetch and store initial news data:', err.message);
-    }
+//     // Fetch and store data automatically on server start
+//     try {
+//       await fetchAndStoreNews();
+//       console.log('Initial news data fetched and stored successfully');
+//     } catch (err) {
+//       console.error('Failed to fetch and store initial news data:', err.message);
+//     }
+// const PORT = process.env.PORT || 5000;
+//     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+//   }).catch(err => {
+//     console.error('Could not connect to MongoDB...', err);
+//   });
+
+// mongoose.connect('mongodb+srv://gsparsh17:Gsparsh17@cluster0.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+// })
+// .then(() => console.log('MongoDB connected successfully!'))
+// .catch(err => console.log('MongoDB connection error: ', err));
+
+
+const { MongoClient, ServerApiVersion } = require('mongodb');
+const uri = "mongodb+srv://gsparsh17:Gsparsh17@1xcric.kbbu0.mongodb.net/?retryWrites=true&w=majority&appName=1xCric";
+
+// Create a MongoClient with a MongoClientOptions object to set the Stable API version
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  }
+});
+
+async function run() {
+  try {
+    // Connect the client to the server	(optional starting in v4.7)
+    await client.connect();
+    // Send a ping to confirm a successful connection
+    await client.db("admin").command({ ping: 1 });
+    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+  } finally {
+    // Ensures that the client will close when you finish/error
+    await client.close();
+  }
+}
+run().catch(console.dir);
+
+
 
     // Start the server after data is fetched and stored
-    const PORT = process.env.PORT || 5000;
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-  }).catch(err => {
-    console.error('Could not connect to MongoDB...', err);
-  });
 
   const UserSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
