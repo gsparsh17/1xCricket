@@ -145,7 +145,7 @@ function decodeHtmlEntities(str) {
     className="md:w-16 w-12 rounded-full aspect-square"/>
 ) : (
   <img
-    src={`http://localhost:5000${item.imageUrl}`}
+    src={`https://onexcricket.onrender.com${item.imageUrl}`}
     alt={item.title}
     className="shrink-0 self-stretch md:w-14 w-8 rounded-full aspect-square"/>)}
             <div className="w-[275px] hover:underline"><a href={`/News/${item._id}`}>{limitWords(decodeHtmlEntities(item.title), 7)}</a></div>

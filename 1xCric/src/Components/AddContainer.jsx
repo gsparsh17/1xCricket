@@ -9,7 +9,7 @@ const AdsContainer = () => {
   useEffect(() => {
     const fetchAds = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/ads');
+        const response = await axios.get('https://onexcricket.onrender.com/api/ads');
         setAds(response.data);
         setLoading(false);
       } catch (err) {
