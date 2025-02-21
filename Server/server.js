@@ -430,7 +430,7 @@ cron.schedule('* * * * *', async () => {
         article.published = true;
         await article.save();
         console.log(`Published ${articlesToPublish.length} scheduled articles. on ${article.publishDateTime}`);
-        await axios.post(`https://onexcricket.onrender.com/api/news/${article._id}/publish`);
+        await axios.post(`http://localhost:5000/api/news/${article._id}/publish`);
       }
     }
   } catch (err) {
@@ -733,7 +733,7 @@ app.post('/api/ads/:id/upload-image', upload1.single('image'), async (req, res) 
     if (!req.file) {
       return res.status(400).send('No file uploaded.');
     }
-    const image = `https://onexcricket.onrender.com/uploads/${req.file.filename}`;
+    const image = `http://localhost:5000/uploads/${req.file.filename}`;
     const ad = await Ad.findByIdAndUpdate(req.params.id, { image: image }, { new: true });
     if (!ad) {
       return res.status(404).send('Ad not found');
@@ -755,7 +755,7 @@ app.post('/api/ads/upload-image', upload1.single('image'), (req, res) => {
     if (!req.file) {
       return res.status(400).json({ message: 'No file uploaded' });
     }
-    const image = `https://onexcricket.onrender.com/uploads/${req.file.filename}`;
+    const image = `http://localhost:5000/uploads/${req.file.filename}`;
     const newMedia = new Media({
       imageUrl: req.body.image,
       category: req.body.category || 'Uncategorized'
@@ -773,7 +773,7 @@ app.post('/api/news/:id/upload-image', upload1.single('image'), async (req, res)
     if (!req.file) {
       return res.status(400).send('No file uploaded.');
     }
-    const imageUrl = `https://onexcricket.onrender.com/uploads/${req.file.filename}`;
+    const imageUrl = `http://localhost:5000/uploads/${req.file.filename}`;
     const newsItem = await News.findByIdAndUpdate(req.params.id, { imageUrl }, { new: true });
     if (!newsItem) {
       return res.status(404).send('News item not found');
@@ -795,7 +795,7 @@ app.post('/api/published-news/:id/upload-image', upload1.single('image'), async 
     if (!req.file) {
       return res.status(400).send('No file uploaded.');
     }
-    const imageUrl = `https://onexcricket.onrender.com/uploads/${req.file.filename}`;
+    const imageUrl = `http://localhost:5000/uploads/${req.file.filename}`;
     const newsItem = await PublishedNews.findByIdAndUpdate(req.params.id, { imageUrl }, { new: true });
     if (!newsItem) {
       return res.status(404).send('News item not found');
