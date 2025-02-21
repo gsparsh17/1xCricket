@@ -48,6 +48,7 @@ const [ads, setAds] = useState([]);
       try {
         const response = await axios.get('https://onexcricket.onrender.com/api/ads');
         const pageAds = response.data;
+        console.log(pageAds);
         setAds(pageAds);
       } catch (err) {
         console.error('Error fetching ads:', err);
