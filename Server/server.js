@@ -33,7 +33,9 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/newsdb', {
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 }).then(async () => {
     console.log('Connected to MongoDB...');
 
