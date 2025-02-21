@@ -11,7 +11,7 @@ const AdminAdsManager = () => {
   // Fetch all ads
   const fetchAds = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/ads');
+      const response = await axios.get('https://onexcricket.onrender.com/api/ads');
       setAds(response.data);
     } catch (err) {
       console.error('Error fetching ads:', err);
@@ -36,7 +36,7 @@ const AdminAdsManager = () => {
     formData.append('image', file);
 
     try {
-      const apiUrl = editAd ? `http://localhost:5000/api/ads/${editAd._id}/upload-image` : `http://localhost:5000/api/ads/upload-image`;
+      const apiUrl = editAd ? `https://onexcricket.onrender.com/api/ads/${editAd._id}/upload-image` : `https://onexcricket.onrender.com/api/ads/upload-image`;
 
       const response = await axios.post(apiUrl, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
@@ -53,9 +53,9 @@ const AdminAdsManager = () => {
 
     try {
       if (editAd) {
-        await axios.put(`http://localhost:5000/api/ads/${editAd.id}`, newAd);
+        await axios.put(`https://onexcricket.onrender.com/api/ads/${editAd.id}`, newAd);
       } else {
-        await axios.post('http://localhost:5000/api/ads', newAd);
+        await axios.post('https://onexcricket.onrender.com/api/ads', newAd);
       }
       setNewAd({ image:'', link: '', title: '', category: 'Global' });
       setEditAd(null);
@@ -74,7 +74,7 @@ const AdminAdsManager = () => {
   // Handle delete action
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/ads/${id}`);
+      await axios.delete(`https://onexcricket.onrender.com/api/ads/${id}`);
       fetchAds();
     } catch (err) {
       console.error('Error deleting ad:', err);

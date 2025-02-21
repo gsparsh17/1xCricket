@@ -8,7 +8,7 @@ const MediaLibrary = () => {
   useEffect(() => {
     const fetchMedia = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/media');
+        const res = await axios.get('https://onexcricket.onrender.com/api/media');
         setMediaItems(res.data);
       } catch (err) {
         console.error('Failed to fetch media items', err);

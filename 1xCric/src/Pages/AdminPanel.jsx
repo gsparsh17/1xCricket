@@ -12,7 +12,7 @@
 
 //     const fetchAllNews = async () => {
 //         try {
-//             const response = await axios.get('http://localhost:5000/api/news');
+//             const response = await axios.get('https://onexcricket.onrender.com/api/news');
 //             setNews(response.data);
 //         } catch (error) {
 //             console.error('Error fetching news:', error);
@@ -24,7 +24,7 @@
 //         formData.append('image', event.target.files[0]);
 
 //         try {
-//             await axios.post(`http://localhost:5000/api/news/${id}/upload-image`, formData, {
+//             await axios.post(`https://onexcricket.onrender.com/api/news/${id}/upload-image`, formData, {
 //                 headers: {
 //                     'Content-Type': 'multipart/form-data'
 //                 }
@@ -38,7 +38,7 @@
 
 //     const handleEdit = async (id, updatedNewsItem) => {
 //         try {
-//             await axios.put(`http://localhost:5000/api/news/${id}`, updatedNewsItem);
+//             await axios.put(`https://onexcricket.onrender.com/api/news/${id}`, updatedNewsItem);
 //             // Update the UI or fetch news again to reflect changes
 //             fetchAllNews();
 //         } catch (error) {
@@ -48,7 +48,7 @@
 
 //     const handlePublish = async (id) => {
 //         try {
-//             await axios.post(`http://localhost:5000/api/news/${id}/publish`);
+//             await axios.post(`https://onexcricket.onrender.com/api/news/${id}/publish`);
 //             // Update the state to reflect the published news
 //             fetchAllNews();
 //         } catch (error) {
@@ -64,7 +64,7 @@
 //                     <div key={item._id} className="bg-white p-4 rounded-lg shadow-md flex flex-col">
 //                         {item.imageUrl && (
 //                             <img 
-//                                 src={`http://localhost:5000${item.imageUrl}`} 
+//                                 src={`https://onexcricket.onrender.com${item.imageUrl}`} 
 //                                 alt={item.title} 
 //                                 className="w-full h-48 object-cover mb-4 rounded"
 //                             />
@@ -128,7 +128,7 @@
 
 //     const fetchAllNews = async () => {
 //         try {
-//             const response = await axios.get('http://localhost:5000/api/news');
+//             const response = await axios.get('https://onexcricket.onrender.com/api/news');
 //             setNews(response.data);
 //         } catch (error) {
 //             console.error('Error fetching news:', error);
@@ -173,8 +173,8 @@ function AdminNewsPanel() {
 
     const fetchNews = async (page) => {
         try {
-            axios.post('http://localhost:5000/api/fetch-and-store-news')
-            const response = await axios.get('http://localhost:5000/api/news', {
+            axios.post('https://onexcricket.onrender.com/api/fetch-and-store-news')
+            const response = await axios.get('https://onexcricket.onrender.com/api/news', {
                 params: {
                     page,
                     limit: 10
@@ -194,8 +194,8 @@ function AdminNewsPanel() {
     };
     // const fetchAllNews = async () => {
     //     try {
-    //         axios.post('http://localhost:5000/api/fetch-and-store-news')
-    //         const response = await axios.get('http://localhost:5000/api/news');
+    //         axios.post('https://onexcricket.onrender.com/api/fetch-and-store-news')
+    //         const response = await axios.get('https://onexcricket.onrender.com/api/news');
     //         setNews(response.data);
     //     } catch (error) {
     //         console.error('Error fetching news:', error);

@@ -89,7 +89,7 @@ function NewsEditPage() {
 
     const fetchPublishedNews = async () => {
         try {
-            const response = await axios.get(`http://localhost:5000/api/published-news/${id}`);
+            const response = await axios.get(`https://onexcricket.onrender.com/api/published-news/${id}`);
             const data = response.data;
             setNewsItem(data);
             setTitle(data.title);
@@ -137,7 +137,7 @@ function NewsEditPage() {
 
     const fetchNews = async () => {
         try {
-            const response = await axios.get(`http://localhost:5000/api/news/${id}`);
+            const response = await axios.get(`https://onexcricket.onrender.com/api/news/${id}`);
             const data = response.data;
             const h2Text = extractH2FromHTML(data.gemini_search_result);
             const pText = extractContentExceptH2(removeKeywordsAndHashtags(data.gemini_search_result))
@@ -184,8 +184,8 @@ function NewsEditPage() {
 
         try {
             const apiUrl = isPublished
-      ? `http://localhost:5000/api/published-news/${id}/upload-image`
-      : `http://localhost:5000/api/news/${id}/upload-image`;
+      ? `https://onexcricket.onrender.com/api/published-news/${id}/upload-image`
+      : `https://onexcricket.onrender.com/api/news/${id}/upload-image`;
 
     await axios.post(apiUrl, formData, {
       headers: {
@@ -201,15 +201,15 @@ function NewsEditPage() {
     const handleDelete = async (publish) => {
         try {
             if (publish) {
-            await axios.delete(`http://localhost:5000/api/published-news/${id}`);
+            await axios.delete(`https://onexcricket.onrender.com/api/published-news/${id}`);
             navigate('/Admin/Published');
             }
             else{
-            await axios.delete(`http://localhost:5000/api/news/${id}`);
+            await axios.delete(`https://onexcricket.onrender.com/api/news/${id}`);
             navigate('/Admin');
             } // Redirect back to admin panel
         } catch (error) {
-            await axios.delete(`http://localhost:5000/api/news/${id}`);
+            await axios.delete(`https://onexcricket.onrender.com/api/news/${id}`);
             navigate('/Admin');
             console.error('Error deleting news item:', error);
         }
@@ -238,15 +238,15 @@ function NewsEditPage() {
     
             if (publish) {
                 try{
-                await axios.put(`http://localhost:5000/api/published-news/${id}`, saveData);
+                await axios.put(`https://onexcricket.onrender.com/api/published-news/${id}`, saveData);
                 navigate('/Admin');
                 }
                 catch{
-                await axios.put(`http://localhost:5000/api/news/${id}`, saveData);
+                await axios.put(`https://onexcricket.onrender.com/api/news/${id}`, saveData);
                 navigate('/Admin');
                 }
             } else {
-                await axios.put(`http://localhost:5000/api/news/${id}`, saveData);
+                await axios.put(`https://onexcricket.onrender.com/api/news/${id}`, saveData);
                 navigate('/Admin');
             }
         } catch (error) {
@@ -256,7 +256,7 @@ function NewsEditPage() {
     
     const handlePublish = async () => {
         try {
-            await axios.put(`http://localhost:5000/api/news/${id}`, { 
+            await axios.put(`https://onexcricket.onrender.com/api/news/${id}`, { 
                 title, 
                 content,  // Assuming `content` corresponds to `gemini_search_result`
                 image,
@@ -264,7 +264,7 @@ function NewsEditPage() {
                 author,    // Assuming this corresponds to `imageUrl`
                 published
             });
-            await axios.post(`http://localhost:5000/api/news/${id}/publish`);
+            await axios.post(`https://onexcricket.onrender.com/api/news/${id}/publish`);
             setPublished(true);
             navigate('/Admin');
         } catch (error) {

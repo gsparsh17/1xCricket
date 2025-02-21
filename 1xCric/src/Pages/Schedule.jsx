@@ -72,7 +72,7 @@ function Schedule() {
 
     const fetchAds = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/ads');
+        const response = await axios.get('https://onexcricket.onrender.com/api/ads');
         const pageAds = response.data;
         setAds(pageAds);
       } catch (err) {

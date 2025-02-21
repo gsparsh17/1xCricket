@@ -10,7 +10,7 @@ function MainNewsPage() {
     useEffect(() => {
         const fetchNews = async () => {
             try {
-                const response = await axios.get(`http://localhost:5000/api/published-news/${id}`);
+                const response = await axios.get(`https://onexcricket.onrender.com/api/published-news/${id}`);
                 setNewsItem(response.data);
             } catch (error) {
                 console.error('Error fetching news:', error);

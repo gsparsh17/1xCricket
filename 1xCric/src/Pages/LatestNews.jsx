@@ -83,7 +83,7 @@ function MainNewsPage() {
 
     const fetchAds = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/ads');
+        const response = await axios.get('https://onexcricket.onrender.com/api/ads');
         const pageAds = response.data;
         setAds(pageAds);
       } catch (err) {
@@ -93,7 +93,7 @@ function MainNewsPage() {
 
     const fetchNews = async (page) => {
         try {
-            const response = await axios.get('http://localhost:5000/api/published-news', {
+            const response = await axios.get('https://onexcricket.onrender.com/api/published-news', {
                 params: {
                     page,
                     limit: 10
@@ -157,7 +157,7 @@ function MainNewsPage() {
                             {(
                                 <img src={item.imageUrl} alt={item.title} className="border-2 border-gray-200 rounded-xl m-2 h-auto w-full" />
                             ) || (
-                                <img src={`http://localhost:5000${item.imageUrl}`} alt={item.title} className="border-2 border-gray-200 rounded-xl m-2 h-auto w-full" />
+                                <img src={`https://onexcricket.onrender.com${item.imageUrl}`} alt={item.title} className="border-2 border-gray-200 rounded-xl m-2 h-auto w-full" />
                             )}
                         </div>
                         <div className='w-full md:w-2/3 md:ml-8'>
