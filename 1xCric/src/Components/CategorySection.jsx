@@ -11,7 +11,7 @@ const CategoryNewsSection = ({ category }) => {
 
     const fetchNewsByCategory = async () => {
         try {
-            const response = await axios.get(`http://localhost:5000/api/published-news?categories=${category}`, {
+            const response = await axios.get(`https://onexcricket.onrender.com/api/published-news?categories=${category}`, {
                 params: { category, limit: 4 },
             });
             setNews(response.data.news);

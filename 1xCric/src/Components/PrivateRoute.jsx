@@ -39,11 +39,11 @@ const PrivateRoute = ({ children, adminOnly, authorOnly }) => {
             let response;
             try {
               // First, try fetching from the 'published-news' endpoint
-              response = await axios.get(`http://localhost:5000/api/published-news/${id}`);
+              response = await axios.get(`https://onexcricket.onrender.com/api/published-news/${id}`);
             } catch (error) {
               try {
                 // If the first call fails, try fetching from the 'news' endpoint
-                response = await axios.get(`http://localhost:5000/api/news/${id}`);
+                response = await axios.get(`https://onexcricket.onrender.com/api/news/${id}`);
               } catch (error) {
                 console.error('Error fetching news:', error);
                 // Handle the error (e.g., return, set a message, or redirect)

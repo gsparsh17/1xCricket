@@ -8,7 +8,7 @@ function SideNewsBar({category}) {
 
   const fetchLatestNews = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/published-news?categories=${category}`, {
+      const response = await axios.get(`https://onexcricket.onrender.com/api/published-news?categories=${category}`, {
         params: {
           category,
             page: 1,
@@ -28,7 +28,7 @@ function SideNewsBar({category}) {
   // Fetch popular news from the API
   const fetchPopularNews = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/published-news',{
+      const response = await axios.get('https://onexcricket.onrender.com/api/published-news',{
         params: {
             page: 1,
             limit: 5
