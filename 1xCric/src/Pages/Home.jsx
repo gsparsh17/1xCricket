@@ -56,6 +56,7 @@ const [ads, setAds] = useState([]);
     };
 useEffect(() => {
   // Define an async function inside the effect
+  fetchAds();
   const fetchNews = async () => {
     try {
       const response = await axios.get('https://onexcricket.onrender.com/api/published-news', {
@@ -70,7 +71,7 @@ useEffect(() => {
     }
   };
   fetchNews();
-  fetchAds();
+  
 }, []);
 
 function limitWords(content, wordLimit) {
