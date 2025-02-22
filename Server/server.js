@@ -17,7 +17,7 @@ dotenv.config();
 
 const app = express();
 app.use(cors({
-  origin: ["http://localhost:5000", "https://1x-cricket.vercel.app"]
+  origin: ["http://localhost:5000", "https://1x-cricket.vercel.app","http://localhost:5173"]
 }));
 app.use(express.json());
 app.use('/uploads', express.static('uploads')); // Serve uploaded images
