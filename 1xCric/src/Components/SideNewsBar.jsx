@@ -55,7 +55,7 @@ function SideNewsBar({category}) {
       try {
         const response = await axios.get('https://onexcricket.onrender.com/api/ads');
         const pageAds = response.data;
-        console.log(pageAds);
+        // console.log(pageAds);
         setAds(pageAds);
       } catch (err) {
         console.error('Error fetching ads:', err);

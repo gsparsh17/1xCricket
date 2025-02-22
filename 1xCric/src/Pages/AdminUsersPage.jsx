@@ -10,7 +10,7 @@ const AdminUsersPage = () => {
     // Fetch users when the component is mounted
     const fetchUsers = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/users');
+        const response = await fetch('https://onexcricket.onrender.com/api/users');
         if (response.ok) {
           const data = await response.json();
           setUsers(data);
@@ -27,7 +27,7 @@ const AdminUsersPage = () => {
 
   const handleDelete = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/users/${userId}`, {
+      const response = await fetch(`https://onexcricket.onrender.com/api/users/${userId}`, {
         method: 'DELETE',
       });
       if (response.ok) {

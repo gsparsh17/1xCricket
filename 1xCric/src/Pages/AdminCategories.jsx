@@ -45,7 +45,7 @@ function CategoriesPage() {
 
     const fetchNewsByCategoryAndDate = async (page) => {
         try {
-            const response = await axios.get('http://localhost:5000/api/published-news', {
+            const response = await axios.get('https://onexcricket.onrender.com/api/published-news', {
                 params: {
                     categories: selectedCategory,
                     date: selectedDate,

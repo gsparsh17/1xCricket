@@ -64,14 +64,14 @@ function AddNewsPage() {
 
     const handlePublish = async () => {
         try {
-            // await axios.put(`http://localhost:5000/api/news/${id}`, { 
+            // await axios.put(`https://onexcricket.onrender.com/api/news/${id}`, { 
             //     title, 
             //     content,  // Assuming `content` corresponds to `gemini_search_result`
             //     image,
             //     categories,    // Assuming this corresponds to `imageUrl`
             //     published
             // });
-            await axios.post(`http://localhost:5000/api/news/${id}/publish`);
+            await axios.post(`https://onexcricket.onrender.com/api/news/${id}/publish`);
             navigate('/Admin');
         } catch (error) {
             console.error('Error publishing news:', error);
@@ -80,7 +80,7 @@ function AddNewsPage() {
 
     const handleSave = async (publish) => {
         try {
-            const response = await axios.post('http://localhost:5000/api/news', {
+            const response = await axios.post('https://onexcricket.onrender.com/api/news', {
                 title,
                 content,
                 categories,
@@ -91,7 +91,7 @@ function AddNewsPage() {
             });
 
             if (image) {
-                await axios.post(`http://localhost:5000/api/news/${response.data._id}/upload-image`, image, {
+                await axios.post(`https://onexcricket.onrender.com/api/news/${response.data._id}/upload-image`, image, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },

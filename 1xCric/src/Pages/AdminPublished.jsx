@@ -14,7 +14,7 @@ function AdminPublished() {
 
     const fetchNews = async (page) => {
         try {
-            const response = await axios.get('http://localhost:5000/api/published-news', {
+            const response = await axios.get('https://onexcricket.onrender.com/api/published-news', {
                 params: {
                     page,
                     limit: 10
@@ -42,7 +42,7 @@ function AdminPublished() {
     const postToFacebook = async (title, content) => {
         try {
             setPostingToFb(title);  // To show loading state on the button
-            const response = await axios.post('http://localhost:5000/api/post_facebook', {
+            const response = await axios.post('https://onexcricket.onrender.com/api/post_facebook', {
                 title,
                 content
             });

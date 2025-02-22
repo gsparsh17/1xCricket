@@ -14,7 +14,7 @@ function AdminDashboard() {
 
     const fetchAllNews = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/news');
+            const response = await axios.get('https://onexcricket.onrender.com/api/news');
             const allNews = response.data.news;
             // Sort news by date to ensure the latest ones are shown first
             const sortedNews = allNews.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -27,7 +27,7 @@ function AdminDashboard() {
     };
     const fetchPublishedNews = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/published-news');
+            const response = await axios.get('https://onexcricket.onrender.com/api/published-news');
             const published = response.data.news;
             // Sort by date to ensure it's latest and slice the first 5 items
             const sortedPublished = published.sort((a, b) => new Date(b.date) - new Date(a.date));

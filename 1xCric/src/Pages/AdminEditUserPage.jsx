@@ -14,7 +14,7 @@ const AdminEditUserPage = () => {
     // Fetch the current user data
     const fetchUser = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/users/${id}`);
+        const response = await fetch(`https://onexcricket.onrender.com/api/users/${id}`);
         if (response.ok) {
           const userData = await response.json();
           setUsername(userData.username);
@@ -35,7 +35,7 @@ const AdminEditUserPage = () => {
     setSuccess('');
 
     try {
-      const response = await fetch(`http://localhost:5000/api/users/${id}`, {
+      const response = await fetch(`https://onexcricket.onrender.com/api/users/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
